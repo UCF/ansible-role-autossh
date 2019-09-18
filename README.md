@@ -23,13 +23,20 @@ Available variables are listed below, along with default values (see
         user: "" # Username used to connect to remote server.
         server: "" # IP / hostname of remote server.
         server_key_type: "" # Key type of the remote server, defaults to autossh_default_server_key_type. (Optional)
-        local_port: "" # Local port to forward.
+        forwarding_mode: "-L" # (optional) default -L "Local Forwarding" see About forwarding_mode below for more details
+        bind_address: "" # default is 127.0.0.1 but could be any network interface on forwarding server
+        forwarding_port: "" # port that forwards to destination. alias: `local_port` (supported for backwards compatibility)
         dest_server: "" # IP / hostname to use on the remote server, defaults to autossh_default_dest_server. (Optional)
         dest_port: "" # Port on the remote server to connect to.
         identity_file: "" # Path to SSH private key, defaults to autossh_default_ssh_key_path. (Optional)
 
 Add a set of SSH connection properties per connection. Multiple connections
 can be listed here.
+
+About forwarding_mode options:
+
+    '-L' "Local Forwarding" forwarding_port is local, forwards to destination on remote server network (default)
+    '-R' "Remote Forwarding" forwarding_port in on remote server, forwards to destination on local server network
 
     autossh_path: "/usr/bin/autossh"
 
@@ -66,6 +73,7 @@ authentication is read. The default is `/root/.ssh/id_rsa` for
 protocol version 2. Override this value for an single connection using 
 the `identity_file` option in the `autossh_connections` list. 
 
+
 Dependencies
 ------------
 
@@ -86,7 +94,7 @@ Example Playbook
       - id: "example"
         user: "username"
         server: "remote.server"
-        local_port: "33061"
+        forwarding_port: "33061"
         dest_port: "3306"
 
 Forward local port `33061` to port `3306` on `remote.server`, connecting
